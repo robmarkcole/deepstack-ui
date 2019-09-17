@@ -1,6 +1,16 @@
 # deepstack-web-ui
 Unofficial web UI for working with Deepstack.
-Run the app:
+
+Run deepstack object detection:
+
+```
+$ docker run -e VISION-DETECTION=True -d \
+      -v localstorage:/datastore -p 5000:5000 \
+      -e API-KEY="Mysecretkey" \
+       --name deepstack deepquestai/deepstack:noavx
+```
+
+Edit the deepstack credentials in `app/server.py` and run the app:
 ```
 $ python3 app/server.py serve
 ```

@@ -5,6 +5,7 @@ import uvicorn
 from pathlib import Path
 import sys
 from io import BytesIO
+import deepstack.core as ds
 from starlette.applications import Starlette
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse, JSONResponse
@@ -20,6 +21,13 @@ app.add_middleware(
 )
 app.mount("/static", StaticFiles(directory="app/static"))
 
+## Depstack setup
+DEEPSTACK_IP_ADDRESS = 'localhost'
+DEEPSTACK_PORT = '5000'
+DEEPSTACK_API_KEY = "Mysecretkey"
+DEEPSTACK_TIMEOUT = 20 # Default is 10
+
+dsobject = ds.DeepstackObject(DEEPSTACK_IP_ADDRESS, DEEPSTACK_PORT, DEEPSTACK_API_KEY, DEEPSTACK_TIMEOUT)
 
 @app.route("/")
 async def homepage(request):
@@ -31,8 +39,13 @@ async def homepage(request):
 async def analyze(request):
     img_data = await request.form()
     img_bytes = await (img_data["file"].read())
-    img = open_image(BytesIO(img_bytes))
-    prediction = learn.predict(img)[0]
+
+    try:
+        dsobject.detect(img_bytes)
+    except ds.DeepstackException as exc:
+        print(exc)
+
+    prediction = dsobject.predictions[0]
     return JSONResponse({"result": str(prediction)})
 
 
