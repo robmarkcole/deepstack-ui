@@ -1,5 +1,13 @@
 # deepstack-web-ui
 Unofficial web UI for working with Deepstack.
+Run the app:
+```
+$ python3 app/server.py serve
+```
+
+<p align="center">
+<img src="https://github.com/robmarkcole/deepstack-web-ui/blob/master/usage.jpg" width="500">
+</p>
 
 ## Development
 Use venv:
@@ -7,11 +15,6 @@ Use venv:
 $ python3 -m venv venv
 $ source venv/bin/activate
 $ pip install --upgrade -r requirements.txt
-```
-
-Now run:
-```
-$ python3 app/server.py serve
 ```
 
 ## References
