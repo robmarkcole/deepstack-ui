@@ -16,7 +16,7 @@ $ python3 app/server.py serve
 ```
 
 <p align="center">
-<img src="https://github.com/robmarkcole/deepstack-web-ui/blob/master/usage.jpg" width="500">
+<img src="https://github.com/robmarkcole/deepstack-web-ui/blob/master/usage.png" width="600">
 </p>
 
 ## Development
