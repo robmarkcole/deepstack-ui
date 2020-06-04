@@ -1,18 +1,20 @@
-# deepstack-web-ui
-Unofficial web UI for working with Deepstack.
+# deepstack-ui
+Unofficial UI for working with Deepstack.
 
 Run deepstack object detection:
 
 ```
-$ docker run -e VISION-DETECTION=True -d \
-      -v localstorage:/datastore -p 5000:5000 \
-      -e API-KEY="Mysecretkey" \
-       --name deepstack deepquestai/deepstack:noavx
+docker run -e VISION-DETECTION=True \
+-v localstorage:/datastore \
+-p 5000:5000 \
+-e API-KEY="" \
+--name deepstack \
+deepquestai/deepstack:noavx
 ```
 
-Edit the deepstack credentials in `app/server.py` and run the app:
+Edit the deepstack credentials in `streamlit-ui.py` and run the app:
 ```
-$ python3 app/server.py serve
+venv/bin/streamlit run streamlit-ui.py
 ```
 
 <p align="center">
