@@ -4,7 +4,7 @@ Unofficial UI for working with Deepstack.
 Run deepstack object detection:
 
 ```
-docker run -e VISION-DETECTION=True -d \
+docker run -e VISION-DETECTION=True \
 -v localstorage:/datastore \
 -p 5000:5000 \
 -e API-KEY="" \
