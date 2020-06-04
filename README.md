@@ -18,7 +18,7 @@ venv/bin/streamlit run streamlit-ui.py
 ```
 
 <p align="center">
-<img src="https://github.com/robmarkcole/deepstack-web-ui/blob/master/usage.png" width="600">
+<img src="https://github.com/robmarkcole/deepstack-ui/blob/master/usage.png" width="800">
 </p>
 
 ## Development
