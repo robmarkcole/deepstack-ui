@@ -19,3 +19,4 @@ bin-release/
 
 venv
 .vscode
+__pycache__*
