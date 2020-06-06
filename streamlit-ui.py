@@ -76,4 +76,4 @@ st.image(
     np.array(pil_image), caption=f"Processed image", use_column_width=True,
 )
 st.write(summary)
-st.write(predictions)
+st.write(objects)
