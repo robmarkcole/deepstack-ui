@@ -2,7 +2,7 @@
 UI for working with Deepstack. Allows uploading an image and performing object detection with deepstack. The effect of various parameters can be explored.
 
 <p align="center">
-<img src="https://github.com/robmarkcole/deepstack-ui/blob/master/usage.png" width="800">
+<img src="https://github.com/robmarkcole/deepstack-ui/blob/master/usage.png" width="600">
 </p>
 
 ## Run deepstack
