@@ -11,9 +11,9 @@ import const
 
 ## Depstack setup
 DEEPSTACK_IP = os.getenv("DEEPSTACK_IP", "set-your-deepstack-ip")
-DEEPSTACK_PORT = "5000"
-DEEPSTACK_API_KEY = ""
-DEEPSTACK_TIMEOUT = 20  # Default is 10
+DEEPSTACK_PORT = os.getenv("DEEPSTACK_PORT", "5000")
+DEEPSTACK_API_KEY = os.getenv("DEEPSTACK_API_KEY", "")
+DEEPSTACK_TIMEOUT = os.getenv("DEEPSTACK_TIMEOUT", "10")
 
 DEFAULT_CONFIDENCE_THRESHOLD = 80
 TEST_IMAGE = "street.jpg"
