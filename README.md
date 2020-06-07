@@ -35,9 +35,9 @@ Or if you are running deepstack with non default parameters, an example would be
 ```
 docker run -p 8501:8501 \
 -e DEEPSTACK_IP='192.168.1.133' \
--e DEEPSTACK_PORT='5000' \
+-e DEEPSTACK_PORT=5000 \
 -e DEEPSTACK_API_KEY='my_key' \
--e DEEPSTACK_TIMEOUT='20' \
+-e DEEPSTACK_TIMEOUT=20 \
 robmarkcole/deepstack-ui:latest`
 ```
 
