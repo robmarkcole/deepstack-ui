@@ -10,12 +10,12 @@ import utils
 import const
 
 ## Depstack setup
-DEEPSTACK_IP = os.getenv("DEEPSTACK_IP", "set-your-deepstack-ip")
-DEEPSTACK_PORT = os.getenv("DEEPSTACK_PORT", "5000")
+DEEPSTACK_IP = os.getenv("DEEPSTACK_IP", "localhost")
+DEEPSTACK_PORT = os.getenv("DEEPSTACK_PORT", 5000)
 DEEPSTACK_API_KEY = os.getenv("DEEPSTACK_API_KEY", "")
-DEEPSTACK_TIMEOUT = os.getenv("DEEPSTACK_TIMEOUT", "10")
+DEEPSTACK_TIMEOUT = int(os.getenv("DEEPSTACK_TIMEOUT", 10))
 
-DEFAULT_CONFIDENCE_THRESHOLD = 80
+DEFAULT_CONFIDENCE_THRESHOLD = 0
 TEST_IMAGE = "street.jpg"
 
 predictions = None
@@ -23,20 +23,23 @@ predictions = None
 
 @st.cache
 def process_image(pil_image, dsobject):
-    try:
-        image_bytes = utils.pil_image_to_byte_array(pil_image)
-        dsobject.detect(image_bytes)
-        predictions = dsobject.predictions
-        summary = ds.get_objects_summary(dsobject.predictions)
-        return predictions, summary
-    except Exception as exc:
-        return exc
+    image_bytes = utils.pil_image_to_byte_array(pil_image)
+    dsobject.detect(image_bytes)
+    predictions = dsobject.predictions
+    return predictions
 
 
-st.title("Object detection with Deepstack")
+st.title("Deepstack Object detection")
 img_file_buffer = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
-confidence_threshold = st.slider(
+
+st.sidebar.title("Parameters")
+CONFIDENCE_THRESHOLD = st.sidebar.slider(
     "Confidence threshold", 0, 100, DEFAULT_CONFIDENCE_THRESHOLD, 1
+)
+CLASSES_TO_INCLUDE = st.sidebar.multiselect(
+    "Select object classes to include",
+    options=const.CLASSES,
+    default=const.DEFAULT_CLASSES,
 )
 
 if img_file_buffer is not None:
@@ -49,9 +52,13 @@ dsobject = ds.DeepstackObject(
     DEEPSTACK_IP, DEEPSTACK_PORT, DEEPSTACK_API_KEY, DEEPSTACK_TIMEOUT
 )
 
-predictions, summary = process_image(pil_image, dsobject)
+predictions = process_image(pil_image, dsobject)
 objects = utils.get_objects(predictions, pil_image.width, pil_image.height)
+all_objects_names = set([obj["name"] for obj in objects])
 
+# Filter objects for display
+objects = [obj for obj in objects if obj["confidence"] > CONFIDENCE_THRESHOLD]
+objects = [obj for obj in objects if obj["name"] in CLASSES_TO_INCLUDE]
 
 draw = ImageDraw.Draw(pil_image)
 for obj in objects:
@@ -59,9 +66,6 @@ for obj in objects:
     confidence = obj["confidence"]
     box = obj["bounding_box"]
     box_label = f"{name}: {confidence:.1f}%"
-
-    if confidence < confidence_threshold:
-        continue
 
     utils.draw_box(
         draw,
@@ -75,5 +79,17 @@ for obj in objects:
 st.image(
     np.array(pil_image), caption=f"Processed image", use_column_width=True,
 )
-st.write(summary)
+st.subheader("All discovered objects")
+st.write(all_objects_names)
+
+st.subheader("Object count")
+obj_types = list(set([obj["name"] for obj in objects]))
+for obj_type in obj_types:
+    obj_type_count = len([obj for obj in objects if obj["name"] == obj_type])
+    st.write(f"{obj_type} : {obj_type_count}")
+
+st.subheader("All filtered objects")
 st.write(objects)
+
+st.subheader("Deepstack raw response")
+st.write(predictions)
