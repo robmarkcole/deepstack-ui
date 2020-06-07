@@ -27,9 +27,9 @@ From the root dir, build from source:
     docker run -p 8501:8501 -e DEEPSTACK_IP='192.168.1.133' deepstack-ui:latest
 ```
 
-Alternatively run the [pre-built](https://hub.docker.com/repository/docker/robmarkcole/deepstack-ui) image:
+Alternatively run the [pre-built](https://hub.docker.com/repository/docker/robmarkcole/deepstack-ui) image in daemon mode:
 ```
-docker run -p 8501:8501 -e DEEPSTACK_IP='192.168.1.133' robmarkcole/deepstack-ui:latest`
+docker run -p 8501:8501 -e DEEPSTACK_IP='192.168.1.133' -d --name deepstack_ui robmarkcole/deepstack-ui:latest`
 ```
 Or if you are running deepstack with non default parameters, an example would be:
 ```
