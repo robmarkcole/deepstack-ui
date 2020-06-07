@@ -10,7 +10,7 @@ import utils
 import const
 
 ## Depstack setup
-DEEPSTACK_IP_ADDRESS = "localhost"
+DEEPSTACK_IP = os.getenv("DEEPSTACK_IP", "set-your-deepstack-ip")
 DEEPSTACK_PORT = "5000"
 DEEPSTACK_API_KEY = ""
 DEEPSTACK_TIMEOUT = 20  # Default is 10
@@ -46,7 +46,7 @@ else:
     pil_image = Image.open(TEST_IMAGE)
 
 dsobject = ds.DeepstackObject(
-    DEEPSTACK_IP_ADDRESS, DEEPSTACK_PORT, DEEPSTACK_API_KEY, DEEPSTACK_TIMEOUT
+    DEEPSTACK_IP, DEEPSTACK_PORT, DEEPSTACK_API_KEY, DEEPSTACK_TIMEOUT
 )
 
 predictions, summary = process_image(pil_image, dsobject)
