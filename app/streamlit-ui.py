@@ -82,6 +82,12 @@ st.image(
 st.subheader("All discovered objects")
 st.write(all_objects_names)
 
+st.subheader("Object count")
+obj_types = list(set([obj["name"] for obj in objects]))
+for obj_type in obj_types:
+    obj_type_count = len([obj for obj in objects if obj["name"] == obj_type])
+    st.write(f"{obj_type} : {obj_type_count}")
+
 st.subheader("All filtered objects")
 st.write(objects)
 
