@@ -1,6 +1,11 @@
 # deepstack-ui
-Unofficial UI for working with Deepstack.
+UI for working with Deepstack. Allows uploading an image and performing object detection with deepstack. The effect of various parameters can be explored.
 
+<p align="center">
+<img src="https://github.com/robmarkcole/deepstack-ui/blob/master/usage.png" width="800">
+</p>
+
+## Run deepstack
 Run deepstack object detection:
 
 ```
@@ -12,14 +17,7 @@ docker run -e VISION-DETECTION=True \
 deepquestai/deepstack:noavx
 ```
 
-Edit the deepstack credentials in `streamlit-ui.py` and run the app:
-```
-venv/bin/streamlit run streamlit-ui.py
-```
-
-<p align="center">
-<img src="https://github.com/robmarkcole/deepstack-ui/blob/master/usage.png" width="800">
-</p>
+You will need the ip address of the machine running deepstack, which is passed to the streamlit app.
 
 ## Run with Docker
 From the root dir, build from source:
