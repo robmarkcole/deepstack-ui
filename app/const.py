@@ -82,7 +82,7 @@ CLASSES = [
     "snowboard",
     "spoon",
     "sports ball",
-    "stop_sign",
+    "stop sign",
     "suitcase",
     "surfboard",
     "teddy bear",

@@ -13,7 +13,7 @@ import const
 DEEPSTACK_IP = os.getenv("DEEPSTACK_IP", "localhost")
 DEEPSTACK_PORT = os.getenv("DEEPSTACK_PORT", 5000)
 DEEPSTACK_API_KEY = os.getenv("DEEPSTACK_API_KEY", "")
-DEEPSTACK_TIMEOUT = os.getenv("DEEPSTACK_TIMEOUT", 10)
+DEEPSTACK_TIMEOUT = int(os.getenv("DEEPSTACK_TIMEOUT", 10))
 
 DEFAULT_CONFIDENCE_THRESHOLD = 0
 TEST_IMAGE = "street.jpg"
@@ -33,8 +33,13 @@ st.title("Deepstack Object detection")
 img_file_buffer = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
 
 st.sidebar.title("Parameters")
-confidence_threshold = st.sidebar.slider(
+CONFIDENCE_THRESHOLD = st.sidebar.slider(
     "Confidence threshold", 0, 100, DEFAULT_CONFIDENCE_THRESHOLD, 1
+)
+CLASSES_TO_INCLUDE = st.sidebar.multiselect(
+    "Select object classes to include",
+    options=const.CLASSES,
+    default=const.DEFAULT_CLASSES,
 )
 
 if img_file_buffer is not None:
@@ -49,9 +54,11 @@ dsobject = ds.DeepstackObject(
 
 predictions = process_image(pil_image, dsobject)
 objects = utils.get_objects(predictions, pil_image.width, pil_image.height)
+all_objects_names = set([obj["name"] for obj in objects])
 
-# Filter objects
-objects = [obj for obj in objects if obj["confidence"] > confidence_threshold]
+# Filter objects for display
+objects = [obj for obj in objects if obj["confidence"] > CONFIDENCE_THRESHOLD]
+objects = [obj for obj in objects if obj["name"] in CLASSES_TO_INCLUDE]
 
 draw = ImageDraw.Draw(pil_image)
 for obj in objects:
@@ -72,4 +79,11 @@ for obj in objects:
 st.image(
     np.array(pil_image), caption=f"Processed image", use_column_width=True,
 )
+st.subheader("All discovered objects")
+st.write(all_objects_names)
+
+st.subheader("All filtered objects")
 st.write(objects)
+
+st.subheader("Deepstack raw response")
+st.write(predictions)
