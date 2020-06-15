@@ -43,8 +43,17 @@ robmarkcole/deepstack-ui:latest`
 
 Then visit [localhost:8501](http://localhost:8501/) (not whatever ip address is shown in the logs, this is the internal docker ip)
 
-Above example for using with docker-compose:
+Above examples for using with docker-compose:
 ```
+  deepstack:
+    container_name: deepstack
+    restart: unless-stopped
+    image: deepquestai/deepstack:noavx
+    ports:
+      - '5000:5000'
+    environment:
+      - VISION-DETECTION=True
+      - API-KEY=""
   deepstack_ui:
     container_name: deepstack_ui
     restart: unless-stopped
