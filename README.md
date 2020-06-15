@@ -43,6 +43,21 @@ robmarkcole/deepstack-ui:latest`
 
 Then visit [localhost:8501](http://localhost:8501/) (not whatever ip address is shown in the logs, this is the internal docker ip)
 
+Above example for using with docker-compose:
+```
+  deepstack_ui:
+    container_name: deepstack_ui
+    restart: unless-stopped
+    image: robmarkcole/deepstack-ui:latest
+    environment: 
+      - DEEPSTACK_IP=192.168.1.133
+      - DEEPSTACK_PORT=5000
+      - DEEPSTACK_API_KEY='my_key'
+      - DEEPSTACK_TIMEOUT=20
+    ports:
+      - '8501:8501'
+```
+
 ### FAQ
 Q1: I get the error: `TypeError: cannot unpack non-iterable DeepstackException object`
 
