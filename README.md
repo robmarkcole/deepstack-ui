@@ -53,7 +53,9 @@ Above examples for using with docker-compose:
       - '5000:5000'
     environment:
       - VISION-DETECTION=True
-      - API-KEY=""
+      - API-KEY="my_key"
+    volumes:
+      - /srv/docker/deepstack:/datastore
   deepstack_ui:
     container_name: deepstack_ui
     restart: unless-stopped
