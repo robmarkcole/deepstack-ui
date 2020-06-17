@@ -61,7 +61,7 @@ Above examples for using with docker-compose:
     restart: unless-stopped
     image: robmarkcole/deepstack-ui:latest
     environment: 
-      - DEEPSTACK_IP=192.168.1.133
+      - DEEPSTACK_IP=deepstack
       - DEEPSTACK_PORT=5000
       - DEEPSTACK_API_KEY='my_key'
       - DEEPSTACK_TIMEOUT=20
