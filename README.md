@@ -1,5 +1,5 @@
 # deepstack-ui
-UI for working with [Deepstack](https://python.deepstack.cc/). Allows uploading an image and performing object detection with deepstack. The effect of various parameters can be explored, including filtering the classes of object detected, filtering by minimum confidence (%), and spatial filtering using a regoin of interest (ROI).
+UI for working with [Deepstack](https://python.deepstack.cc/). Allows uploading an image and performing object detection with Deepstack. The effect of various parameters can be explored, including filtering the classes of object detected, filtering by minimum confidence (%), and spatial filtering using a region of interest (ROI).
 
 <p align="center">
 <img src="https://github.com/robmarkcole/deepstack-ui/blob/master/usage.png" width="1000">
@@ -15,10 +15,11 @@ docker run \
 -p 5000:5000 \
 -e API-KEY="" \
 --name deepstack \
-deepquestai/deepstack:noavx
+deepquestai/deepstack:cpu-x3-beta
 ```
+Alternatively if you have a GPU use the `deepquestai/deepstack:gpu-x3-beta` image.
 
-You will need the ip address of the machine running deepstack, which is passed to the streamlit app.
+You will need the ip address of the machine running deepstack, which is passed to the Streamlit app.
 
 ## Run with Docker
 From the root dir, build from source:
@@ -48,12 +49,12 @@ Above examples for using with docker-compose:
   deepstack:
     container_name: deepstack
     restart: unless-stopped
-    image: deepquestai/deepstack:noavx
+    image: deepquestai/deepstack:cpu-x3-beta
     ports:
       - '5000:5000'
     environment:
       - VISION-DETECTION=True
-      - API-KEY="my_key"
+      - API-KEY=""
     volumes:
       - /srv/docker/deepstack:/datastore
   deepstack_ui:
@@ -63,7 +64,7 @@ Above examples for using with docker-compose:
     environment: 
       - DEEPSTACK_IP=deepstack
       - DEEPSTACK_PORT=5000
-      - DEEPSTACK_API_KEY='my_key'
+      - DEEPSTACK_API_KEY=""
       - DEEPSTACK_TIMEOUT=20
     ports:
       - '8501:8501'
