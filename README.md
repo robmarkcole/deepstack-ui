@@ -76,3 +76,9 @@ Q1: I get the error: `TypeError: cannot unpack non-iterable DeepstackException o
 A1: You probably didn't pass the required environment variables (`DEEPSTACK_IP` etc.)
 
 ------
+
+## Development
+* Create and activate a venv: `python3 -m venv venv` and `source venv/bin/activate`
+* Install requirements: `pip3 install -r requirements.txt`
+* Export required environment variable: `export DEEPSTACK_IP='192.168.1.133'`
+* Run streamlit from `app` folder: `streamlit run streamlit-ui.py`

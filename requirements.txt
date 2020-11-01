@@ -1,4 +1,4 @@
-numpy==1.18.5
-Pillow==7.1.2
+numpy>=1.18.5
+Pillow>=7.1.2
 deepstack-python==0.6
-streamlit==0.61.0
+streamlit==0.70.0
