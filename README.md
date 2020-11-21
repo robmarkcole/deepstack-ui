@@ -15,11 +15,12 @@ docker run -e VISION-DETECTION=True -p 5000:5000 -e API-KEY="" -e MODE=High deep
 You will need the ip address of the machine running deepstack, which is passed to the Streamlit app.
 
 ## Run with Docker
-From the root dir, build from source:
+From the root dir, build from source then run the UI:
 ```
     docker build -t deepstack-ui .
     docker run -p 8501:8501 -e DEEPSTACK_IP='192.168.1.133' deepstack-ui:latest
 ```
+The UI is now viewable at [http://localhost:8501](http://localhost:8501)
 
 Alternatively run the [pre-built](https://hub.docker.com/repository/docker/robmarkcole/deepstack-ui) image in daemon mode:
 ```
