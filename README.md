@@ -9,15 +9,8 @@ UI for working with [Deepstack](https://python.deepstack.cc/). Allows uploading 
 Run deepstack object detection:
 
 ```
-docker run \
--e VISION-DETECTION=True \
--v localstorage:/datastore \
--p 5000:5000 \
--e API-KEY="" \
---name deepstack \
-deepquestai/deepstack:cpu-x3-beta
+docker run -e VISION-DETECTION=True -p 5000:5000 -e API-KEY="" -e MODE=High deepquestai/deepstack:cpu-x6-beta
 ```
-Alternatively if you have a GPU use the `deepquestai/deepstack:gpu-x3-beta` image.
 
 You will need the ip address of the machine running deepstack, which is passed to the Streamlit app.
 
