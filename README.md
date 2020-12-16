@@ -9,24 +9,28 @@ UI for working with [Deepstack](https://python.deepstack.cc/). Allows uploading 
 Run deepstack object detection:
 
 ```
-docker run -e VISION-DETECTION=True -p 5000:5000 -e API-KEY="" -e MODE=High deepquestai/deepstack:cpu-x6-beta
+docker run -e VISION-DETECTION=True -p 5000:5000 -e API-KEY="" -e MODE=High deepquestai/deepstack:latest
 ```
 
-You will need the ip address of the machine running deepstack, which is passed to the Streamlit app.
+You will need the ip address of the machine running deepstack, which is passed to the Streamlit app using an environment variable.
 
-## Run with Docker
-From the root dir, build from source then run the UI:
+## Run deepstack-ui with Docker
+The `deepstack-ui` is designed to be run in a docker container. The UI picks up the information about your deepstack instance from environment variables which are passed into the container using the `-e VARIABLE=value` approach. All environment variables that can be passed are listed below:
+```
+- DEEPSTACK_IP : the IP address of your deepstack instance, default "localhost"
+- DEEPSTACK_PORT : the PORT of your deepstack instance, default 80
+- DEEPSTACK_API_KEY : the API key of your deepstack instance, if you have set one
+- DEEPSTACK_TIMEOUT : the timeout to wait for deepstack, default 10 seconds
+```
+
+From the root dir, build the deepstack-ui container from source and then run the UI, passing the `DEEPSTACK_IP` environment variable:
 ```
     docker build -t deepstack-ui .
     docker run -p 8501:8501 -e DEEPSTACK_IP='192.168.1.133' deepstack-ui:latest
 ```
-The UI is now viewable at [http://localhost:8501](http://localhost:8501)
+The UI is now viewable at [http://localhost:8501](http://localhost:8501) (not whatever ip address is shown in the logs, this is the internal docker ip)
 
-Alternatively run the [pre-built](https://hub.docker.com/repository/docker/robmarkcole/deepstack-ui) image in daemon mode:
-```
-docker run -p 8501:8501 -e DEEPSTACK_IP='192.168.1.133' -d --name deepstack_ui robmarkcole/deepstack-ui:latest
-```
-Or if you are running deepstack with non default parameters, an example would be:
+Alternatively if you are running deepstack with non default parameters, an example would be:
 ```
 docker run -p 8501:8501 \
 -e DEEPSTACK_IP='192.168.1.133' \
@@ -34,34 +38,6 @@ docker run -p 8501:8501 \
 -e DEEPSTACK_API_KEY='my_key' \
 -e DEEPSTACK_TIMEOUT=20 \
 robmarkcole/deepstack-ui:latest`
-```
-
-Then visit [localhost:8501](http://localhost:8501/) (not whatever ip address is shown in the logs, this is the internal docker ip)
-
-Above examples for using with docker-compose:
-```
-  deepstack:
-    container_name: deepstack
-    restart: unless-stopped
-    image: deepquestai/deepstack:cpu-x3-beta
-    ports:
-      - '5000:5000'
-    environment:
-      - VISION-DETECTION=True
-      - API-KEY=""
-    volumes:
-      - /srv/docker/deepstack:/datastore
-  deepstack_ui:
-    container_name: deepstack_ui
-    restart: unless-stopped
-    image: robmarkcole/deepstack-ui:latest
-    environment: 
-      - DEEPSTACK_IP=deepstack
-      - DEEPSTACK_PORT=5000
-      - DEEPSTACK_API_KEY=""
-      - DEEPSTACK_TIMEOUT=20
-    ports:
-      - '8501:8501'
 ```
 
 ### FAQ
@@ -74,5 +50,5 @@ A1: You probably didn't pass the required environment variables (`DEEPSTACK_IP` 
 ## Development
 * Create and activate a venv: `python3 -m venv venv` and `source venv/bin/activate`
 * Install requirements: `pip3 install -r requirements.txt`
-* Export required environment variable: `export DEEPSTACK_IP='192.168.1.133'`
-* Run streamlit from `app` folder: `streamlit run streamlit-ui.py`
+* Export required environment variables: `export DEEPSTACK_IP='192.168.1.133'`
+* Run streamlit from `app` folder: `streamlit run deepstack-ui.py`

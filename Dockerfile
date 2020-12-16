@@ -12,4 +12,4 @@ COPY app /app
 WORKDIR /app
 
 ENTRYPOINT [ "streamlit", "run"]
-CMD ["streamlit-ui.py"]
+CMD ["deepstack-ui.py"]
