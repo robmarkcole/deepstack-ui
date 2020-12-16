@@ -7,17 +7,6 @@ RED = (255, 0, 0)  # For objects within the ROI
 GREEN = (0, 255, 0)  # For ROI box
 YELLOW = (255, 255, 0)  # For objects outside the ROI
 
-DEFAULT_CLASSES = [
-    "bicycle",
-    "bus",
-    "car",
-    "cat",
-    "dog",
-    "motorcycle",
-    "person",
-    "truck",
-]
-
 CLASSES = [
     "airplane",
     "apple",

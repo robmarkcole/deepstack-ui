@@ -14,6 +14,7 @@ DEEPSTACK_IP = os.getenv("DEEPSTACK_IP", "localhost")
 DEEPSTACK_PORT = os.getenv("DEEPSTACK_PORT", 80)
 DEEPSTACK_API_KEY = os.getenv("DEEPSTACK_API_KEY", "")
 DEEPSTACK_TIMEOUT = int(os.getenv("DEEPSTACK_TIMEOUT", 20))
+DEEPSTACK_CUSTOM_MODEL = os.getenv("DEEPSTACK_CUSTOM_MODEL", None)
 
 DEFAULT_CONFIDENCE_THRESHOLD = 45  # percent
 TEST_IMAGE = "street.jpg"
@@ -41,18 +42,25 @@ def process_image(pil_image, dsobject):
 
 ## Setup sidebar
 st.title("Deepstack Object detection")
+if not DEEPSTACK_CUSTOM_MODEL:
+    st.text("Using default model")
+else:
+    st.text(f"Using custom model named {DEEPSTACK_CUSTOM_MODEL}")
+
 img_file_buffer = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
 
 st.sidebar.title("Parameters")
+st.text("Adjust parameters to select what is displayed")
 CONFIDENCE_THRESHOLD = st.sidebar.slider(
     "Confidence threshold", 0, 100, DEFAULT_CONFIDENCE_THRESHOLD, 1
 )
 
-CLASSES_TO_INCLUDE = st.sidebar.multiselect(
-    "Select object classes to include",
-    options=const.CLASSES,
-    default=const.DEFAULT_CLASSES,
-)
+if not DEEPSTACK_CUSTOM_MODEL:
+    CLASSES_TO_INCLUDE = st.sidebar.multiselect(
+        "Select object classes to include",
+        options=const.CLASSES,
+        default=const.CLASSES,
+    )
 
 # Get ROI info
 st.sidebar.title("ROI")
@@ -80,9 +88,18 @@ if img_file_buffer is not None:
 else:
     pil_image = Image.open(TEST_IMAGE)
 
-dsobject = ds.DeepstackObject(
-    DEEPSTACK_IP, DEEPSTACK_PORT, DEEPSTACK_API_KEY, DEEPSTACK_TIMEOUT
-)
+if not DEEPSTACK_CUSTOM_MODEL:
+    dsobject = ds.DeepstackObject(
+        DEEPSTACK_IP, DEEPSTACK_PORT, DEEPSTACK_API_KEY, DEEPSTACK_TIMEOUT
+    )
+else:
+    dsobject = ds.DeepstackObject(
+        DEEPSTACK_IP,
+        DEEPSTACK_PORT,
+        DEEPSTACK_API_KEY,
+        DEEPSTACK_TIMEOUT,
+        DEEPSTACK_CUSTOM_MODEL,
+    )
 
 predictions = process_image(pil_image, dsobject)
 objects = utils.get_objects(predictions, pil_image.width, pil_image.height)
@@ -90,8 +107,9 @@ all_objects_names = set([obj["name"] for obj in objects])
 
 # Filter objects for display
 objects = [obj for obj in objects if obj["confidence"] > CONFIDENCE_THRESHOLD]
-objects = [obj for obj in objects if obj["name"] in CLASSES_TO_INCLUDE]
 objects = [obj for obj in objects if utils.object_in_roi(ROI_DICT, obj["centroid"])]
+if not DEEPSTACK_CUSTOM_MODEL:
+    objects = [obj for obj in objects if obj["name"] in CLASSES_TO_INCLUDE]
 
 # Draw object boxes
 draw = ImageDraw.Draw(pil_image)
