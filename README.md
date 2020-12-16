@@ -21,12 +21,13 @@ The `deepstack-ui` is designed to be run in a docker container. The UI picks up 
 - DEEPSTACK_PORT : the PORT of your deepstack instance, default 80
 - DEEPSTACK_API_KEY : the API key of your deepstack instance, if you have set one
 - DEEPSTACK_TIMEOUT : the timeout to wait for deepstack, default 10 seconds
+- DEEPSTACK_CUSTOM_MODEL : the name of a custom model, if you wish to use one
 ```
 
 From the root dir, build the deepstack-ui container from source and then run the UI, passing the `DEEPSTACK_IP` environment variable:
 ```
     docker build -t deepstack-ui .
-    docker run -p 8501:8501 -e DEEPSTACK_IP='192.168.1.133' deepstack-ui:latest
+    docker run -p 8501:8501 -e DEEPSTACK_IP='192.168.1.133' deepstack-ui
 ```
 The UI is now viewable at [http://localhost:8501](http://localhost:8501) (not whatever ip address is shown in the logs, this is the internal docker ip)
 
@@ -34,10 +35,10 @@ Alternatively if you are running deepstack with non default parameters, an examp
 ```
 docker run -p 8501:8501 \
 -e DEEPSTACK_IP='192.168.1.133' \
--e DEEPSTACK_PORT=5000 \
--e DEEPSTACK_API_KEY='my_key' \
+-e DEEPSTACK_PORT=80 \
 -e DEEPSTACK_TIMEOUT=20 \
-robmarkcole/deepstack-ui:latest`
+-e DEEPSTACK_CUSTOM_MODEL=mask \
+deepstack-ui
 ```
 
 ### FAQ
@@ -50,5 +51,5 @@ A1: You probably didn't pass the required environment variables (`DEEPSTACK_IP` 
 ## Development
 * Create and activate a venv: `python3 -m venv venv` and `source venv/bin/activate`
 * Install requirements: `pip3 install -r requirements.txt`
-* Export required environment variables: `export DEEPSTACK_IP='192.168.1.133'`
+* Export required environment variables: `export DEEPSTACK_CUSTOM_MODEL='mask'`
 * Run streamlit from `app` folder: `streamlit run deepstack-ui.py`

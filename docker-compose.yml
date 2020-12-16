@@ -1,7 +1,7 @@
 deepstack:
 container_name: deepstack
 restart: unless-stopped
-image: deepquestai/deepstack:latest
+image: deepquestai/deepstack
 ports:
   - '5000:5000'
 environment:
@@ -12,7 +12,7 @@ volumes:
 deepstack_ui:
 container_name: deepstack_ui
 restart: unless-stopped
-image: robmarkcole/deepstack-ui:latest
+image: robmarkcole/deepstack-ui
 environment: 
   - DEEPSTACK_IP=deepstack
   - DEEPSTACK_PORT=5000
