@@ -11,11 +11,11 @@ import const
 
 ## Depstack setup
 DEEPSTACK_IP = os.getenv("DEEPSTACK_IP", "localhost")
-DEEPSTACK_PORT = os.getenv("DEEPSTACK_PORT", 5000)
+DEEPSTACK_PORT = os.getenv("DEEPSTACK_PORT", 80)
 DEEPSTACK_API_KEY = os.getenv("DEEPSTACK_API_KEY", "")
-DEEPSTACK_TIMEOUT = int(os.getenv("DEEPSTACK_TIMEOUT", 10))
+DEEPSTACK_TIMEOUT = int(os.getenv("DEEPSTACK_TIMEOUT", 20))
 
-DEFAULT_CONFIDENCE_THRESHOLD = 0
+DEFAULT_CONFIDENCE_THRESHOLD = 45  # percent
 TEST_IMAGE = "street.jpg"
 
 DEFAULT_ROI_Y_MIN = 0.0
@@ -35,8 +35,7 @@ predictions = None
 @st.cache
 def process_image(pil_image, dsobject):
     image_bytes = utils.pil_image_to_byte_array(pil_image)
-    dsobject.detect(image_bytes)
-    predictions = dsobject.predictions
+    predictions = dsobject.detect(image_bytes)
     return predictions
 
 

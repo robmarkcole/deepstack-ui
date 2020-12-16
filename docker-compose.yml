@@ -1,0 +1,22 @@
+deepstack:
+container_name: deepstack
+restart: unless-stopped
+image: deepquestai/deepstack:latest
+ports:
+  - '5000:5000'
+environment:
+  - VISION-DETECTION=True
+  - API-KEY=""
+volumes:
+  - /srv/docker/deepstack:/datastore
+deepstack_ui:
+container_name: deepstack_ui
+restart: unless-stopped
+image: robmarkcole/deepstack-ui:latest
+environment: 
+  - DEEPSTACK_IP=deepstack
+  - DEEPSTACK_PORT=5000
+  - DEEPSTACK_API_KEY=""
+  - DEEPSTACK_TIMEOUT=20
+ports:
+  - '8501:8501'
