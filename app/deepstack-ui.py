@@ -52,7 +52,7 @@ img_file_buffer = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"
 st.sidebar.title("Parameters")
 st.text("Adjust parameters to select what is displayed")
 CONFIDENCE_THRESHOLD = st.sidebar.slider(
-    "Confidence threshold", DEFAULT_CONFIDENCE_THRESHOLD, 1.0, 0.45
+    "Confidence threshold", DEFAULT_CONFIDENCE_THRESHOLD, 1.0
 )
 
 if not DEEPSTACK_CUSTOM_MODEL:
