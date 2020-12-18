@@ -9,7 +9,7 @@ import deepstack.core as ds
 import utils
 import const
 
-DEFAULT_CONFIDENCE_THRESHOLD = 0.45
+DEFAULT_CONFIDENCE_THRESHOLD = 0.01
 TEST_IMAGE = "street.jpg"
 
 DEFAULT_ROI_Y_MIN = 0.0
@@ -29,9 +29,6 @@ DEEPSTACK_PORT = os.getenv("DEEPSTACK_PORT", 80)
 DEEPSTACK_API_KEY = os.getenv("DEEPSTACK_API_KEY", "")
 DEEPSTACK_TIMEOUT = int(os.getenv("DEEPSTACK_TIMEOUT", 20))
 DEEPSTACK_CUSTOM_MODEL = os.getenv("DEEPSTACK_CUSTOM_MODEL", None)
-DEEPSTACK_MIN_CONFIDENCE = os.getenv(
-    "DEEPSTACK_MIN_CONFIDENCE", DEFAULT_CONFIDENCE_THRESHOLD
-)
 
 predictions = None
 
@@ -55,7 +52,7 @@ img_file_buffer = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"
 st.sidebar.title("Parameters")
 st.text("Adjust parameters to select what is displayed")
 CONFIDENCE_THRESHOLD = st.sidebar.slider(
-    "Confidence threshold", DEEPSTACK_MIN_CONFIDENCE, 1.0
+    "Confidence threshold", DEFAULT_CONFIDENCE_THRESHOLD, 1.0, 0.45
 )
 
 if not DEEPSTACK_CUSTOM_MODEL:
@@ -93,15 +90,20 @@ else:
 
 if not DEEPSTACK_CUSTOM_MODEL:
     dsobject = ds.DeepstackObject(
-        DEEPSTACK_IP, DEEPSTACK_PORT, DEEPSTACK_API_KEY, DEEPSTACK_TIMEOUT
+        ip=DEEPSTACK_IP,
+        port=DEEPSTACK_PORT,
+        api_key=DEEPSTACK_API_KEY,
+        timeout=DEEPSTACK_TIMEOUT,
+        min_confidence=DEFAULT_CONFIDENCE_THRESHOLD,
     )
 else:
     dsobject = ds.DeepstackObject(
-        DEEPSTACK_IP,
-        DEEPSTACK_PORT,
-        DEEPSTACK_API_KEY,
-        DEEPSTACK_TIMEOUT,
-        DEEPSTACK_CUSTOM_MODEL,
+        ip=DEEPSTACK_IP,
+        port=DEEPSTACK_PORT,
+        api_key=DEEPSTACK_API_KEY,
+        timeout=DEEPSTACK_TIMEOUT,
+        min_confidence=DEFAULT_CONFIDENCE_THRESHOLD,
+        custom_model=DEEPSTACK_CUSTOM_MODEL,
     )
 
 predictions = process_image(pil_image, dsobject)
