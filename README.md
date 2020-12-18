@@ -1,5 +1,5 @@
 # deepstack-ui
-UI for working with [Deepstack](https://python.deepstack.cc/). Allows uploading an image and performing object detection with Deepstack. The effect of various parameters can be explored, including filtering the classes of object detected, filtering by minimum confidence (%), and spatial filtering using a region of interest (ROI).
+UI for working with [Deepstack](https://python.deepstack.cc/). Allows uploading an image and performing object detection with Deepstack. The effect of various parameters can be explored, including filtering the classes of object detected, filtering by minimum confidence, and spatial filtering using a region of interest (ROI).
 
 <p align="center">
 <img src="https://github.com/robmarkcole/deepstack-ui/blob/master/usage.png" width="1000">
