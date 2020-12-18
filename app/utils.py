@@ -49,7 +49,7 @@ def get_objects(predictions: list, img_width: int, img_height: int):
             "y": round(box["y_min"] + (box["height"] / 2), decimal_places),
         }
         name = pred["label"]
-        confidence = round(pred["confidence"] * 100, decimal_places)
+        confidence = pred["confidence"]
 
         objects.append(
             {
