@@ -9,14 +9,7 @@ import deepstack.core as ds
 import utils
 import const
 
-## Depstack setup
-DEEPSTACK_IP = os.getenv("DEEPSTACK_IP", "localhost")
-DEEPSTACK_PORT = os.getenv("DEEPSTACK_PORT", 80)
-DEEPSTACK_API_KEY = os.getenv("DEEPSTACK_API_KEY", "")
-DEEPSTACK_TIMEOUT = int(os.getenv("DEEPSTACK_TIMEOUT", 20))
-DEEPSTACK_CUSTOM_MODEL = os.getenv("DEEPSTACK_CUSTOM_MODEL", None)
-
-DEFAULT_CONFIDENCE_THRESHOLD = 45  # percent
+DEFAULT_CONFIDENCE_THRESHOLD = 0.45
 TEST_IMAGE = "street.jpg"
 
 DEFAULT_ROI_Y_MIN = 0.0
@@ -28,6 +21,16 @@ DEFAULT_ROI = (
     DEFAULT_ROI_X_MIN,
     DEFAULT_ROI_Y_MAX,
     DEFAULT_ROI_X_MAX,
+)
+
+## Depstack setup
+DEEPSTACK_IP = os.getenv("DEEPSTACK_IP", "localhost")
+DEEPSTACK_PORT = os.getenv("DEEPSTACK_PORT", 80)
+DEEPSTACK_API_KEY = os.getenv("DEEPSTACK_API_KEY", "")
+DEEPSTACK_TIMEOUT = int(os.getenv("DEEPSTACK_TIMEOUT", 20))
+DEEPSTACK_CUSTOM_MODEL = os.getenv("DEEPSTACK_CUSTOM_MODEL", None)
+DEEPSTACK_MIN_CONFIDENCE = os.getenv(
+    "DEEPSTACK_MIN_CONFIDENCE", DEFAULT_CONFIDENCE_THRESHOLD
 )
 
 predictions = None
@@ -52,7 +55,7 @@ img_file_buffer = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"
 st.sidebar.title("Parameters")
 st.text("Adjust parameters to select what is displayed")
 CONFIDENCE_THRESHOLD = st.sidebar.slider(
-    "Confidence threshold", 0, 100, DEFAULT_CONFIDENCE_THRESHOLD, 1
+    "Confidence threshold", DEEPSTACK_MIN_CONFIDENCE, 1.0
 )
 
 if not DEEPSTACK_CUSTOM_MODEL:
@@ -117,7 +120,7 @@ for obj in objects:
     name = obj["name"]
     confidence = obj["confidence"]
     box = obj["bounding_box"]
-    box_label = f"{name}: {confidence:.1f}%"
+    box_label = f"{name}"
 
     utils.draw_box(
         draw,
@@ -154,6 +157,3 @@ for obj_type in obj_types:
 
 st.subheader("All filtered objects")
 st.write(objects)
-
-st.subheader("Deepstack raw response")
-st.write(predictions)
