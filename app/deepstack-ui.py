@@ -45,36 +45,13 @@ def process_image_object(pil_image, dsobject):
     return predictions
 
 
+def process_image_face(pil_image, dsface):
+    image_bytes = utils.pil_image_to_byte_array(pil_image)
+    predictions = dsface.recognize(image_bytes)
+    return predictions
+
+
 deepstack_mode = st.selectbox("Select Deepstack mode:", [OBJECT, FACE])
-
-## Setup sidebar
-st.sidebar.title("Parameters")
-st.text("Adjust parameters to select what is displayed")
-CONFIDENCE_THRESHOLD = st.sidebar.slider(
-    "Confidence threshold",
-    MIN_CONFIDENCE_THRESHOLD,
-    MAX_CONFIDENCE_THRESHOLD,
-    DEFAULT_CONFIDENCE_THRESHOLD,
-)
-
-# Get ROI info
-st.sidebar.title("ROI")
-ROI_X_MIN = st.sidebar.slider("x_min", 0.0, 1.0, DEFAULT_ROI_X_MIN)
-ROI_Y_MIN = st.sidebar.slider("y_min", 0.0, 1.0, DEFAULT_ROI_Y_MIN)
-ROI_X_MAX = st.sidebar.slider("x_max", 0.0, 1.0, DEFAULT_ROI_X_MAX)
-ROI_Y_MAX = st.sidebar.slider("y_max", 0.0, 1.0, DEFAULT_ROI_Y_MAX)
-ROI_TUPLE = (
-    ROI_Y_MIN,
-    ROI_X_MIN,
-    ROI_Y_MAX,
-    ROI_X_MAX,
-)
-ROI_DICT = {
-    "x_min": ROI_X_MIN,
-    "y_min": ROI_Y_MIN,
-    "x_max": ROI_X_MAX,
-    "y_max": ROI_Y_MAX,
-}
 
 if deepstack_mode == FACE:
     st.title("Deepstack Face detection & recogntion")
@@ -91,6 +68,18 @@ if deepstack_mode == FACE:
         np.array(pil_image), caption=f"Processed image", use_column_width=True,
     )
 
+    dsface = ds.DeepstackFace(
+        ip=DEEPSTACK_IP,
+        port=DEEPSTACK_PORT,
+        api_key=DEEPSTACK_API_KEY,
+        timeout=DEEPSTACK_TIMEOUT,
+        min_confidence=MIN_CONFIDENCE_THRESHOLD,
+    )
+    predictions = process_image_face(pil_image, dsface)
+    st.subheader("All faces")
+    st.write(utils.get_faces(predictions))
+
+
 elif deepstack_mode == OBJECT:
     ## Setup main
     st.title("Deepstack Object detection")
@@ -98,6 +87,35 @@ elif deepstack_mode == OBJECT:
         st.text("Using default model")
     else:
         st.text(f"Using custom model named {DEEPSTACK_CUSTOM_MODEL}")
+
+    ## Setup sidebar
+    st.sidebar.title("Parameters")
+    st.text("Adjust parameters to select what is displayed")
+    CONFIDENCE_THRESHOLD = st.sidebar.slider(
+        "Confidence threshold",
+        MIN_CONFIDENCE_THRESHOLD,
+        MAX_CONFIDENCE_THRESHOLD,
+        DEFAULT_CONFIDENCE_THRESHOLD,
+    )
+
+    # Get ROI info
+    st.sidebar.title("ROI")
+    ROI_X_MIN = st.sidebar.slider("x_min", 0.0, 1.0, DEFAULT_ROI_X_MIN)
+    ROI_Y_MIN = st.sidebar.slider("y_min", 0.0, 1.0, DEFAULT_ROI_Y_MIN)
+    ROI_X_MAX = st.sidebar.slider("x_max", 0.0, 1.0, DEFAULT_ROI_X_MAX)
+    ROI_Y_MAX = st.sidebar.slider("y_max", 0.0, 1.0, DEFAULT_ROI_Y_MAX)
+    ROI_TUPLE = (
+        ROI_Y_MIN,
+        ROI_X_MIN,
+        ROI_Y_MAX,
+        ROI_X_MAX,
+    )
+    ROI_DICT = {
+        "x_min": ROI_X_MIN,
+        "y_min": ROI_Y_MIN,
+        "x_max": ROI_X_MAX,
+        "y_max": ROI_Y_MAX,
+    }
 
     img_file_buffer = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
 
