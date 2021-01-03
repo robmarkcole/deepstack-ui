@@ -13,7 +13,7 @@ DEFAULT_CONFIDENCE_THRESHOLD = 0.45
 MIN_CONFIDENCE_THRESHOLD = 0.1
 MAX_CONFIDENCE_THRESHOLD = 1.0
 OBJECT_TEST_IMAGE = "street.jpg"
-FACE_TEST_IMAGE = "idris.jpg"
+FACE_TEST_IMAGE = "faces.jpg"
 FACE = "Face"
 OBJECT = "Object"
 
@@ -45,6 +45,7 @@ def process_image_object(pil_image, dsobject):
     return predictions
 
 
+@st.cache
 def process_image_face(pil_image, dsface):
     image_bytes = utils.pil_image_to_byte_array(pil_image)
     predictions = dsface.recognize(image_bytes)
@@ -54,7 +55,7 @@ def process_image_face(pil_image, dsface):
 deepstack_mode = st.selectbox("Select Deepstack mode:", [OBJECT, FACE])
 
 if deepstack_mode == FACE:
-    st.title("Deepstack Face detection & recogntion")
+    st.title("Deepstack Face recogntion")
 
     img_file_buffer = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
     ## Process image
@@ -64,10 +65,6 @@ if deepstack_mode == FACE:
     else:
         pil_image = Image.open(FACE_TEST_IMAGE)
 
-    st.image(
-        np.array(pil_image), caption=f"Processed image", use_column_width=True,
-    )
-
     dsface = ds.DeepstackFace(
         ip=DEEPSTACK_IP,
         port=DEEPSTACK_PORT,
@@ -76,8 +73,29 @@ if deepstack_mode == FACE:
         min_confidence=MIN_CONFIDENCE_THRESHOLD,
     )
     predictions = process_image_face(pil_image, dsface)
+    faces = utils.get_faces(predictions, pil_image.width, pil_image.height)
+
+    # Draw object boxes
+    draw = ImageDraw.Draw(pil_image)
+    for face in faces:
+        name = face["name"]
+        confidence = face["confidence"]
+        box = face["bounding_box"]
+        box_label = f"{name}"
+
+        utils.draw_box(
+            draw,
+            (box["y_min"], box["x_min"], box["y_max"], box["x_max"]),
+            pil_image.width,
+            pil_image.height,
+            text=box_label,
+            color=const.YELLOW,
+        )
+    st.image(
+        np.array(pil_image), caption=f"Processed image", use_column_width=True,
+    )
     st.subheader("All faces")
-    st.write(utils.get_faces(predictions))
+    st.write(faces)
 
 
 elif deepstack_mode == OBJECT:
