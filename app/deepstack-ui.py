@@ -97,6 +97,23 @@ if deepstack_mode == FACE:
     st.subheader("All faces")
     st.write(faces)
 
+    st.header("Deepstack Face registration")
+    INSTRUCTION = "First enter the name to register below then load the image"
+    ENTER_MESSAGE = "Enter name here"
+    face_name = st.text_input(label=INSTRUCTION, value=ENTER_MESSAGE)
+    if face_name != ENTER_MESSAGE:
+        st.write(f"Registering face {face_name}")
+        img_file_buffer_register = st.file_uploader(
+            "Upload an image to register", type=["png", "jpg", "jpeg"]
+        )
+        if img_file_buffer_register is not None:
+            try:
+                pil_image_register = Image.open(img_file_buffer_register)
+                image_bytes_register = utils.pil_image_to_byte_array(pil_image_register)
+                response = dsface.register(face_name, image_bytes_register)
+                st.write(response)
+            except ds.DeepstackException as exc:
+                st.write(exc)
 
 elif deepstack_mode == OBJECT:
     ## Setup main
