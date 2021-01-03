@@ -63,6 +63,30 @@ def get_objects(predictions: list, img_width: int, img_height: int):
     return objects
 
 
+def get_faces(predictions: list, img_width: int, img_height: int):
+    """Return faces info."""
+    faces = []
+    decimal_places = 3
+    for pred in predictions:
+        box_width = pred["x_max"] - pred["x_min"]
+        box_height = pred["y_max"] - pred["y_min"]
+        name = pred["userid"]
+        confidence = pred["confidence"]
+        box = {
+            "height": round(box_height / img_height, decimal_places),
+            "width": round(box_width / img_width, decimal_places),
+            "y_min": round(pred["y_min"] / img_height, decimal_places),
+            "x_min": round(pred["x_min"] / img_width, decimal_places),
+            "y_max": round(pred["y_max"] / img_height, decimal_places),
+            "x_max": round(pred["x_max"] / img_width, decimal_places),
+        }
+
+        faces.append(
+            {"name": name, "confidence": confidence, "bounding_box": box,}
+        )
+    return faces
+
+
 def draw_box(
     draw: ImageDraw,
     box: Tuple[float, float, float, float],
