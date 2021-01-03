@@ -53,6 +53,15 @@ def process_image_face(pil_image, dsface):
 
 
 deepstack_mode = st.selectbox("Select Deepstack mode:", [OBJECT, FACE])
+## Setup sidebar
+st.sidebar.title("Parameters")
+st.text("Adjust parameters to select what is displayed")
+CONFIDENCE_THRESHOLD = st.sidebar.slider(
+    "Confidence threshold",
+    MIN_CONFIDENCE_THRESHOLD,
+    MAX_CONFIDENCE_THRESHOLD,
+    DEFAULT_CONFIDENCE_THRESHOLD,
+)
 
 if deepstack_mode == FACE:
     st.title("Deepstack Face recogntion")
@@ -74,14 +83,21 @@ if deepstack_mode == FACE:
     )
     predictions = process_image_face(pil_image, dsface)
     faces = utils.get_faces(predictions, pil_image.width, pil_image.height)
+    recognised_faces = [
+        face for face in faces if face["confidence"] > CONFIDENCE_THRESHOLD
+    ]
 
     # Draw object boxes
     draw = ImageDraw.Draw(pil_image)
     for face in faces:
-        name = face["name"]
         confidence = face["confidence"]
-        box = face["bounding_box"]
+        name = face["name"]
         box_label = f"{name}"
+        box = face["bounding_box"]
+        if confidence < CONFIDENCE_THRESHOLD or name == "unknown":
+            box_colour = const.YELLOW
+        else:
+            box_colour = const.GREEN
 
         utils.draw_box(
             draw,
@@ -89,11 +105,15 @@ if deepstack_mode == FACE:
             pil_image.width,
             pil_image.height,
             text=box_label,
-            color=const.YELLOW,
+            color=box_colour,
         )
     st.image(
         np.array(pil_image), caption=f"Processed image", use_column_width=True,
     )
+
+    st.subheader("All recognised faces")
+    st.write(recognised_faces)
+
     st.subheader("All faces")
     st.write(faces)
 
@@ -122,16 +142,6 @@ elif deepstack_mode == OBJECT:
         st.text("Using default model")
     else:
         st.text(f"Using custom model named {DEEPSTACK_CUSTOM_MODEL}")
-
-    ## Setup sidebar
-    st.sidebar.title("Parameters")
-    st.text("Adjust parameters to select what is displayed")
-    CONFIDENCE_THRESHOLD = st.sidebar.slider(
-        "Confidence threshold",
-        MIN_CONFIDENCE_THRESHOLD,
-        MAX_CONFIDENCE_THRESHOLD,
-        DEFAULT_CONFIDENCE_THRESHOLD,
-    )
 
     # Get ROI info
     st.sidebar.title("ROI")
