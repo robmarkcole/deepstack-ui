@@ -9,8 +9,13 @@ import deepstack.core as ds
 import utils
 import const
 
-DEFAULT_CONFIDENCE_THRESHOLD = 0.01
-TEST_IMAGE = "street.jpg"
+DEFAULT_CONFIDENCE_THRESHOLD = 0.45
+MIN_CONFIDENCE_THRESHOLD = 0.1
+MAX_CONFIDENCE_THRESHOLD = 1.0
+OBJECT_TEST_IMAGE = "street.jpg"
+FACE_TEST_IMAGE = "idris.jpg"
+FACE = "Face"
+OBJECT = "Object"
 
 DEFAULT_ROI_Y_MIN = 0.0
 DEFAULT_ROI_Y_MAX = 1.0
@@ -34,33 +39,23 @@ predictions = None
 
 
 @st.cache
-def process_image(pil_image, dsobject):
+def process_image_object(pil_image, dsobject):
     image_bytes = utils.pil_image_to_byte_array(pil_image)
     predictions = dsobject.detect(image_bytes)
     return predictions
 
 
+deepstack_mode = st.selectbox("Select Deepstack mode:", [OBJECT, FACE])
+
 ## Setup sidebar
-st.title("Deepstack Object detection")
-if not DEEPSTACK_CUSTOM_MODEL:
-    st.text("Using default model")
-else:
-    st.text(f"Using custom model named {DEEPSTACK_CUSTOM_MODEL}")
-
-img_file_buffer = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
-
 st.sidebar.title("Parameters")
 st.text("Adjust parameters to select what is displayed")
 CONFIDENCE_THRESHOLD = st.sidebar.slider(
-    "Confidence threshold", DEFAULT_CONFIDENCE_THRESHOLD, 1.0
+    "Confidence threshold",
+    MIN_CONFIDENCE_THRESHOLD,
+    MAX_CONFIDENCE_THRESHOLD,
+    DEFAULT_CONFIDENCE_THRESHOLD,
 )
-
-if not DEEPSTACK_CUSTOM_MODEL:
-    CLASSES_TO_INCLUDE = st.sidebar.multiselect(
-        "Select object classes to include",
-        options=const.CLASSES,
-        default=const.CLASSES,
-    )
 
 # Get ROI info
 st.sidebar.title("ROI")
@@ -81,81 +76,113 @@ ROI_DICT = {
     "y_max": ROI_Y_MAX,
 }
 
-## Process image
-if img_file_buffer is not None:
-    pil_image = Image.open(img_file_buffer)
+if deepstack_mode == FACE:
+    st.title("Deepstack Face detection & recogntion")
 
-else:
-    pil_image = Image.open(TEST_IMAGE)
+    img_file_buffer = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
+    ## Process image
+    if img_file_buffer is not None:
+        pil_image = Image.open(img_file_buffer)
 
-if not DEEPSTACK_CUSTOM_MODEL:
-    dsobject = ds.DeepstackObject(
-        ip=DEEPSTACK_IP,
-        port=DEEPSTACK_PORT,
-        api_key=DEEPSTACK_API_KEY,
-        timeout=DEEPSTACK_TIMEOUT,
-        min_confidence=DEFAULT_CONFIDENCE_THRESHOLD,
-    )
-else:
-    dsobject = ds.DeepstackObject(
-        ip=DEEPSTACK_IP,
-        port=DEEPSTACK_PORT,
-        api_key=DEEPSTACK_API_KEY,
-        timeout=DEEPSTACK_TIMEOUT,
-        min_confidence=DEFAULT_CONFIDENCE_THRESHOLD,
-        custom_model=DEEPSTACK_CUSTOM_MODEL,
+    else:
+        pil_image = Image.open(FACE_TEST_IMAGE)
+
+    st.image(
+        np.array(pil_image), caption=f"Processed image", use_column_width=True,
     )
 
-predictions = process_image(pil_image, dsobject)
-objects = utils.get_objects(predictions, pil_image.width, pil_image.height)
-all_objects_names = set([obj["name"] for obj in objects])
+elif deepstack_mode == OBJECT:
+    ## Setup main
+    st.title("Deepstack Object detection")
+    if not DEEPSTACK_CUSTOM_MODEL:
+        st.text("Using default model")
+    else:
+        st.text(f"Using custom model named {DEEPSTACK_CUSTOM_MODEL}")
 
-# Filter objects for display
-objects = [obj for obj in objects if obj["confidence"] > CONFIDENCE_THRESHOLD]
-objects = [obj for obj in objects if utils.object_in_roi(ROI_DICT, obj["centroid"])]
-if not DEEPSTACK_CUSTOM_MODEL:
-    objects = [obj for obj in objects if obj["name"] in CLASSES_TO_INCLUDE]
+    img_file_buffer = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
 
-# Draw object boxes
-draw = ImageDraw.Draw(pil_image)
-for obj in objects:
-    name = obj["name"]
-    confidence = obj["confidence"]
-    box = obj["bounding_box"]
-    box_label = f"{name}"
+    if not DEEPSTACK_CUSTOM_MODEL:
+        CLASSES_TO_INCLUDE = st.sidebar.multiselect(
+            "Select object classes to include",
+            options=const.CLASSES,
+            default=const.CLASSES,
+        )
 
-    utils.draw_box(
-        draw,
-        (box["y_min"], box["x_min"], box["y_max"], box["x_max"]),
-        pil_image.width,
-        pil_image.height,
-        text=box_label,
-        color=const.YELLOW,
+    ## Process image
+    if img_file_buffer is not None:
+        pil_image = Image.open(img_file_buffer)
+
+    else:
+        pil_image = Image.open(OBJECT_TEST_IMAGE)
+
+    if not DEEPSTACK_CUSTOM_MODEL:
+        dsobject = ds.DeepstackObject(
+            ip=DEEPSTACK_IP,
+            port=DEEPSTACK_PORT,
+            api_key=DEEPSTACK_API_KEY,
+            timeout=DEEPSTACK_TIMEOUT,
+            min_confidence=MIN_CONFIDENCE_THRESHOLD,
+        )
+    else:
+        dsobject = ds.DeepstackObject(
+            ip=DEEPSTACK_IP,
+            port=DEEPSTACK_PORT,
+            api_key=DEEPSTACK_API_KEY,
+            timeout=DEEPSTACK_TIMEOUT,
+            min_confidence=MIN_CONFIDENCE_THRESHOLD,
+            custom_model=DEEPSTACK_CUSTOM_MODEL,
+        )
+
+    predictions = process_image_object(pil_image, dsobject)
+    objects = utils.get_objects(predictions, pil_image.width, pil_image.height)
+    all_objects_names = set([obj["name"] for obj in objects])
+
+    # Filter objects for display
+    objects = [obj for obj in objects if obj["confidence"] > CONFIDENCE_THRESHOLD]
+    objects = [obj for obj in objects if utils.object_in_roi(ROI_DICT, obj["centroid"])]
+    if not DEEPSTACK_CUSTOM_MODEL:
+        objects = [obj for obj in objects if obj["name"] in CLASSES_TO_INCLUDE]
+
+    # Draw object boxes
+    draw = ImageDraw.Draw(pil_image)
+    for obj in objects:
+        name = obj["name"]
+        confidence = obj["confidence"]
+        box = obj["bounding_box"]
+        box_label = f"{name}"
+
+        utils.draw_box(
+            draw,
+            (box["y_min"], box["x_min"], box["y_max"], box["x_max"]),
+            pil_image.width,
+            pil_image.height,
+            text=box_label,
+            color=const.YELLOW,
+        )
+
+    # Draw ROI box
+    if ROI_TUPLE != DEFAULT_ROI:
+        utils.draw_box(
+            draw,
+            ROI_TUPLE,
+            pil_image.width,
+            pil_image.height,
+            text="ROI",
+            color=const.GREEN,
+        )
+
+    # Display image and results
+    st.image(
+        np.array(pil_image), caption=f"Processed image", use_column_width=True,
     )
+    st.subheader("All discovered objects")
+    st.write(all_objects_names)
 
-# Draw ROI box
-if ROI_TUPLE != DEFAULT_ROI:
-    utils.draw_box(
-        draw,
-        ROI_TUPLE,
-        pil_image.width,
-        pil_image.height,
-        text="ROI",
-        color=const.GREEN,
-    )
+    st.subheader("Filtered object count")
+    obj_types = list(set([obj["name"] for obj in objects]))
+    for obj_type in obj_types:
+        obj_type_count = len([obj for obj in objects if obj["name"] == obj_type])
+        st.write(f"{obj_type} : {obj_type_count}")
 
-# Display image and results
-st.image(
-    np.array(pil_image), caption=f"Processed image", use_column_width=True,
-)
-st.subheader("All discovered objects")
-st.write(all_objects_names)
-
-st.subheader("Filtered object count")
-obj_types = list(set([obj["name"] for obj in objects]))
-for obj_type in obj_types:
-    obj_type_count = len([obj for obj in objects if obj["name"] == obj_type])
-    st.write(f"{obj_type} : {obj_type_count}")
-
-st.subheader("All filtered objects")
-st.write(objects)
+    st.subheader("All filtered objects")
+    st.write(objects)
