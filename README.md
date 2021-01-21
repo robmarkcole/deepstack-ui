@@ -1,5 +1,5 @@
 # deepstack-ui
-UI for working with [Deepstack](https://python.deepstack.cc/). Allows uploading an image and performing object detection or face recognition with Deepstack. Also faces can be registered with Deepstack. The effect of various parameters can be explored, including filtering filtering by confidence, the classes of object detected, and spatial filtering using a region of interest (ROI).
+UI for working with [Deepstack](https://deepstack.cc/). Allows uploading an image and performing object detection or face recognition with Deepstack. Also faces can be registered with Deepstack. The effect of various parameters can be explored, including filtering objects by confidence, type and location in the image.
 
 <p align="center">
 <img src="https://github.com/robmarkcole/deepstack-ui/blob/master/usage.png" width="1000">
@@ -7,12 +7,11 @@ UI for working with [Deepstack](https://python.deepstack.cc/). Allows uploading 
 
 ## Run deepstack
 Run deepstack object detection:
-
 ```
-docker run -e VISION-DETECTION=True -p 5000:5000 -e API-KEY="" -e MODE=High deepquestai/deepstack:latest
+docker run -e VISION-DETECTION=True -p 80:5000 deepquestai/deepstack:latest
 ```
 
-You will need the ip address of the machine running deepstack, which is passed to the Streamlit app using an environment variable.
+You will need the ip address of the machine running deepstack, which in my case is `192.168.1.133`.
 
 ## Run deepstack-ui with Docker
 The `deepstack-ui` is designed to be run in a docker container. The UI picks up the information about your deepstack instance from environment variables which are passed into the container using the `-e VARIABLE=value` approach. All environment variables that can be passed are listed below:
@@ -20,13 +19,16 @@ The `deepstack-ui` is designed to be run in a docker container. The UI picks up 
 - DEEPSTACK_IP : the IP address of your deepstack instance, default "localhost"
 - DEEPSTACK_PORT : the PORT of your deepstack instance, default 80
 - DEEPSTACK_API_KEY : the API key of your deepstack instance, if you have set one
-- DEEPSTACK_TIMEOUT : the timeout to wait for deepstack, default 10 seconds
+- DEEPSTACK_TIMEOUT : the timeout to wait for deepstack, default 30 seconds
 - DEEPSTACK_CUSTOM_MODEL : the name of a custom model, if you wish to use one
 ```
 
 From the root dir, build the deepstack-ui container from source and then run the UI, passing the `DEEPSTACK_IP` environment variable:
 ```
     docker build -t deepstack-ui .
+    OR
+    docker pull robmarkcole/deepstack-ui:latest
+
     docker run -p 8501:8501 -e DEEPSTACK_IP='192.168.1.133' deepstack-ui
 ```
 The UI is now viewable at [http://localhost:8501](http://localhost:8501) (not whatever ip address is shown in the logs, this is the internal docker ip)
