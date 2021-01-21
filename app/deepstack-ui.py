@@ -9,9 +9,21 @@ import deepstack.core as ds
 import utils
 import const
 
-DEFAULT_CONFIDENCE_THRESHOLD = 0.45
-MIN_CONFIDENCE_THRESHOLD = 0.1
+## Depstack setup
+DEEPSTACK_IP = os.getenv("DEEPSTACK_IP", "localhost")
+DEEPSTACK_PORT = os.getenv("DEEPSTACK_PORT", 80)
+DEEPSTACK_API_KEY = os.getenv("DEEPSTACK_API_KEY", "")
+DEEPSTACK_TIMEOUT = int(os.getenv("DEEPSTACK_TIMEOUT", 30))
+DEEPSTACK_CUSTOM_MODEL = os.getenv("DEEPSTACK_CUSTOM_MODEL", None)
+DEEPSTACK_UI_DEBUG_MODE = bool(os.getenv("DEEPSTACK_UI_DEBUG_MODE", False))
+
+if DEEPSTACK_UI_DEBUG_MODE:
+    st.title("IN DEEPSTACK_UI_DEBUG_MODE")
+    MIN_CONFIDENCE_THRESHOLD = 0.01
+else:
+    MIN_CONFIDENCE_THRESHOLD = 0.1
 MAX_CONFIDENCE_THRESHOLD = 1.0
+DEFAULT_CONFIDENCE_THRESHOLD = 0.45
 OBJECT_TEST_IMAGE = "street.jpg"
 FACE_TEST_IMAGE = "faces.jpg"
 FACE = "Face"
@@ -28,12 +40,6 @@ DEFAULT_ROI = (
     DEFAULT_ROI_X_MAX,
 )
 
-## Depstack setup
-DEEPSTACK_IP = os.getenv("DEEPSTACK_IP", "localhost")
-DEEPSTACK_PORT = os.getenv("DEEPSTACK_PORT", 80)
-DEEPSTACK_API_KEY = os.getenv("DEEPSTACK_API_KEY", "")
-DEEPSTACK_TIMEOUT = int(os.getenv("DEEPSTACK_TIMEOUT", 30))
-DEEPSTACK_CUSTOM_MODEL = os.getenv("DEEPSTACK_CUSTOM_MODEL", None)
 
 predictions = None
 
@@ -64,7 +70,7 @@ CONFIDENCE_THRESHOLD = st.sidebar.slider(
 )
 
 if deepstack_mode == FACE:
-    st.title("Deepstack Face recogntion")
+    st.title("Deepstack Face recognition")
 
     img_file_buffer = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
     ## Process image
@@ -249,3 +255,7 @@ elif deepstack_mode == OBJECT:
 
     st.subheader("All filtered objects")
     st.write(objects)
+
+if DEEPSTACK_UI_DEBUG_MODE:
+    st.subheader("All predictions data from Deepstack")
+    st.write(predictions)

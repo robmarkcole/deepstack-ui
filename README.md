@@ -21,6 +21,7 @@ The `deepstack-ui` is designed to be run in a docker container. The UI picks up 
 - DEEPSTACK_API_KEY : the API key of your deepstack instance, if you have set one
 - DEEPSTACK_TIMEOUT : the timeout to wait for deepstack, default 30 seconds
 - DEEPSTACK_CUSTOM_MODEL : the name of a custom model, if you wish to use one
+- DEEPSTACK_UI_DEBUG_MODE : options `True` or `False` (default). Lowers the minimum confidence threshold to 1%
 ```
 
 From the root dir, build the deepstack-ui container from source and then run the UI, passing the `DEEPSTACK_IP` environment variable:
