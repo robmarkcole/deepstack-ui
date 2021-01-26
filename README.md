@@ -45,7 +45,7 @@ deepstack-ui
 ```
 
 ## Docker-compose
-An example docker-compose file is provided. For run commands see https://docs.docker.com/compose/gettingstarted/#step-8-experiment-with-some-other-commands
+An example docker-compose file is provided. For run commands see [here](https://docs.docker.com/compose/gettingstarted/#step-8-experiment-with-some-other-commands) but the main one you need is `docker-compose up`.
 
 ### FAQ
 Q1: I get the error: `TypeError: cannot unpack non-iterable DeepstackException object`
