@@ -5,7 +5,7 @@ EXPOSE 8501
 
 COPY requirements.txt .
 RUN pacman --noconfirm -Syu
-RUN pacman --noconfirm -S cmake gcc python python-pip python-setuptools git util-linux sudo
+RUN pacman --noconfirm -S cmake gcc python python-pip python-setuptools git util-linux sudo dbus
 RUN pip install -r requirements.txt
 
 RUN mkdir -p /app
