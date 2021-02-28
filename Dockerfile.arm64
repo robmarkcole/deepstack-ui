@@ -1,4 +1,4 @@
-FROM --platform=linux/arm64/v8 lopsided/archlinux
+FROM --platform=arm64v8 lopsided/archlinux
 LABEL maintainer="Robin Cole @robmarkcole"
 
 EXPOSE 8501
