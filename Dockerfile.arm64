@@ -9,6 +9,7 @@ RUN pacman --noconfirm -S cmake gcc python python-pip python-setuptools git util
 RUN pip install -r requirements.txt
 
 RUN mkdir -p /app
+RUN mkdir /var/lib/dbus
 COPY app /app
 WORKDIR /app
 
