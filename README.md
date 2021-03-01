@@ -24,14 +24,26 @@ The `deepstack-ui` is designed to be run in a docker container. The UI picks up 
 - DEEPSTACK_UI_DEBUG_MODE : options `True` or `False` (default). Lowers the minimum confidence threshold to 1%
 ```
 
-From the root dir, build the deepstack-ui container from source and then run the UI, passing the `DEEPSTACK_IP` environment variable:
+From the root dir, either build the deepstack-ui container from source or pull from Docker Hub: and 
+
+For x86-64 architecture
 ```
-    docker build -t deepstack-ui .
+    docker build -t deepstack-ui . -f Dockerfile
     OR
     docker pull robmarkcole/deepstack-ui:latest
-
-    docker run -p 8501:8501 -e DEEPSTACK_IP='192.168.1.133' deepstack-ui
 ```
+
+Or for arm64 architectue (Raspberry Pi):
+
+```
+    docker build -t deepstack-ui . -f Dockerfile.arm64
+    OR
+    docker pull robmarkcole/deepstack-ui:arm64
+```
+Then run the UI, passing the `DEEPSTACK_IP` environment variable:
+
+    `docker run -p 8501:8501 -e DEEPSTACK_IP='192.168.1.133' deepstack-ui`
+
 The UI is now viewable at [http://localhost:8501](http://localhost:8501) (not whatever ip address is shown in the logs, this is the internal docker ip)
 
 Alternatively if you are running deepstack with non default parameters, an example would be:
