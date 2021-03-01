@@ -1,4 +1,4 @@
-FROM malenurse/alpine-base
+FROM malenurse/conda-base
 LABEL developer="Robin Cole @robmarkcole"
 LABEL docker_maintainer="Zach McDonough @malenurse"
 
