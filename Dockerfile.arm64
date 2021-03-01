@@ -1,5 +1,6 @@
 FROM lopsided/archlinux
 LABEL maintainer="Zach McDonough - @MaleNurse"
+LABEL developer="Robin Cole @robmarkcole"
 
 EXPOSE 8501
 
