@@ -1,5 +1,6 @@
-FROM python:3.8
-LABEL maintainer="Robin Cole @robmarkcole"
+FROM malenurse/alpine-base
+LABEL developer="Robin Cole @robmarkcole"
+LABEL docker_maintainer="Zach McDonough @malenurse"
 
 EXPOSE 8501
 
