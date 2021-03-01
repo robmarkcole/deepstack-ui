@@ -33,7 +33,7 @@ For x86-64 architecture
     docker pull robmarkcole/deepstack-ui:latest
 ```
 
-Or for arm64 architecture (e.g. Raspberry Pi, Apple M1 chips)
+Or for arm64 architecture (e.g. Raspberry Pi, [Apple M1 chips](https://docs.docker.com/docker-for-mac/apple-m1/))
 
 ```
     docker build -t deepstack-ui . -f Dockerfile.arm64
