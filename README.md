@@ -42,7 +42,7 @@ Or for arm64 architectue (Raspberry Pi)
 ```
 Then run the UI, passing the `DEEPSTACK_IP` environment variable:
 
-    `docker run -p 8501:8501 -e DEEPSTACK_IP='192.168.1.133' deepstack-ui`
+    docker run -p 8501:8501 -e DEEPSTACK_IP='192.168.1.133' deepstack-ui
 
 The UI is now viewable at [http://localhost:8501](http://localhost:8501) (not whatever ip address is shown in the logs, this is the internal docker ip)
 
