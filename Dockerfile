@@ -1,4 +1,4 @@
-FROM malenurse/conda-base
+FROM malenurse/ubuntu-20.04-base
 LABEL developer="Robin Cole @robmarkcole"
 LABEL docker_maintainer="Zach McDonough @malenurse"
 
