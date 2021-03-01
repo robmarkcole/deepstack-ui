@@ -33,7 +33,7 @@ For x86-64 architecture
     docker pull robmarkcole/deepstack-ui:latest
 ```
 
-Or for arm64 architectue (Raspberry Pi):
+Or for arm64 architectue (Raspberry Pi)
 
 ```
     docker build -t deepstack-ui . -f Dockerfile.arm64
