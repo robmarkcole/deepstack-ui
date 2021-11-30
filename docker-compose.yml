@@ -14,7 +14,7 @@ services:
   deepstack_ui:
     container_name: deepstack_ui
     restart: unless-stopped
-    image: deepstack-ui
+    image: robmarkcole/deepstack-ui:latest
     environment: 
       - DEEPSTACK_IP=deepstack
       - DEEPSTACK_PORT=5000
